@@ -490,7 +490,7 @@ class OverlayDDU : public Overlay
                 if( perLapConsEst > 0 )
                 {
                     const float estLaps = (remainingFuel-fuelReserveMargin) / perLapConsEst;
-                    swprintf( s, _countof(s), L"%.1f", estLaps );
+                    swprintf( s, _countof(s), L"%.*f", g_cfg.getInt( m_name, "fuel_decimal_places", 2), estLaps);
                     m_text.render( m_renderTarget.Get(), s, m_textFormatBold.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*3.0f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
                 }
 
