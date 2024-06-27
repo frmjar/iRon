@@ -445,13 +445,14 @@ class OverlayDDU : public Overlay
                 }
                 
                 m_brush->SetColor( textCol );
-                m_text.render( m_renderTarget.Get(), L"Laps", m_textFormat.Get(),      m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*2.8f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
-                m_text.render( m_renderTarget.Get(), L"Rem", m_textFormatSmall.Get(), m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*5.1f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
-                m_text.render( m_renderTarget.Get(), L"Per", m_textFormatSmall.Get(), m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*6.9f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
-                m_text.render( m_renderTarget.Get(), L"Fin+", m_textFormatSmall.Get(), m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*8.7f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
-                m_text.render( m_renderTarget.Get(), L"Add", m_textFormatSmall.Get(), m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*10.5f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
+                m_text.render( m_renderTarget.Get(), L"Laps", m_textFormat.Get(),      m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*2.3f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
+                m_text.render( m_renderTarget.Get(), L"Rem", m_textFormatSmall.Get(), m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*4.6f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
+                m_text.render( m_renderTarget.Get(), L"Per", m_textFormatSmall.Get(), m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*6.4f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
+                m_text.render( m_renderTarget.Get(), L"Fin+", m_textFormatSmall.Get(), m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*8.2f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
+                m_text.render( m_renderTarget.Get(), L"Add", m_textFormatSmall.Get(), m_boxFuel.x0+xoff, m_boxFuel.x1, m_boxFuel.y0+m_boxFuel.h*10.0f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_LEADING );
 
                 const float estimateFactor = g_cfg.getFloat( m_name, "fuel_estimate_factor", 1.1f );
+                const float fuelReserveMargin = g_cfg.getFloat(m_name, "fuel_reserve_margin", 0.25f);
                 const float remainingFuel  = ir_FuelLevel.getFloat();
 
                 // Update average fuel consumption tracking. Ignore laps that weren't entirely under green or where we pitted.
@@ -488,9 +489,9 @@ class OverlayDDU : public Overlay
                 const float perLapConsEst = avgPerLap * estimateFactor;  // conservative estimate of per-lap use for further calculations
                 if( perLapConsEst > 0 )
                 {
-                    const float estLaps = remainingFuel / perLapConsEst;
-                    swprintf( s, _countof(s), L"%.*f", estLaps<10?1:0, estLaps );
-                    m_text.render( m_renderTarget.Get(), s, m_textFormatBold.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*2.8f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
+                    const float estLaps = (remainingFuel-fuelReserveMargin) / perLapConsEst;
+                    swprintf( s, _countof(s), L"%.1f", estLaps );
+                    m_text.render( m_renderTarget.Get(), s, m_textFormatBold.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*3.0f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
                 }
 
                 // Remaining
@@ -499,8 +500,8 @@ class OverlayDDU : public Overlay
                     float val = remainingFuel;
                     if( imperial )
                         val *= 0.264172f;
-                    swprintf( s, _countof(s), imperial ? L"%.1f gl" : L"%.1f lt", val );
-                    m_text.render( m_renderTarget.Get(), s, m_textFormat.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*5.1f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
+                    swprintf( s, _countof(s), imperial ? L"%.2f gl" : L"%.2f lt", val );
+                    m_text.render( m_renderTarget.Get(), s, m_textFormat.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*5.3f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
                 }
 
                 // Per Lap
@@ -509,8 +510,8 @@ class OverlayDDU : public Overlay
                     float val = avgPerLap;
                     if( imperial )
                         val *= 0.264172f;
-                    swprintf( s, _countof(s), imperial ? L"%.1f gl" : L"%.2f lt", val );
-                    m_text.render( m_renderTarget.Get(), s, m_textFormat.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*6.9f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
+                    swprintf( s, _countof(s), imperial ? L"%.2f gl" : L"%.2f lt", val );
+                    m_text.render( m_renderTarget.Get(), s, m_textFormat.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*7.1f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
                 }
 
                 // To Finish
@@ -525,8 +526,8 @@ class OverlayDDU : public Overlay
 
                     if( imperial )
                         toFinish *= 0.264172f;
-                    swprintf( s, _countof(s), imperial ? L"%3.1f gl" : L"%3.1f lt", toFinish );
-                    m_text.render( m_renderTarget.Get(), s, m_textFormat.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*8.7f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
+                    swprintf( s, _countof(s), imperial ? L"%3.2f gl" : L"%3.2f lt", toFinish );
+                    m_text.render( m_renderTarget.Get(), s, m_textFormat.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*8.9f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
                     m_brush->SetColor( textCol );
                 }
 
@@ -539,8 +540,8 @@ class OverlayDDU : public Overlay
 
                     if( imperial )
                         add *= 0.264172f;
-                    swprintf( s, _countof(s), imperial ? L"%3.1f gl" : L"%3.1f lt", add );
-                    m_text.render( m_renderTarget.Get(), s, m_textFormat.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*10.5f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
+                    swprintf( s, _countof(s), imperial ? L"%3.2f gl" : L"%3.2f lt", add );
+                    m_text.render( m_renderTarget.Get(), s, m_textFormat.Get(), m_boxFuel.x0, m_boxFuel.x1-xoff, m_boxFuel.y0+m_boxFuel.h*10.7f/12.0f, m_brush.Get(), DWRITE_TEXT_ALIGNMENT_TRAILING );
                     m_brush->SetColor( textCol );
                 }
             }
