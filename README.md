@@ -42,7 +42,7 @@ At the top is an optional minimap. It can be set to either relative mode (own ca
 
 A dashboard that concentrates important pieces of information for which you would otherwise have to flip through various boxes in iRacing.
 
-The fuel calculator shows the estimated remaining laps, remaining amount of fuel, estimated fuel used per lap, estimated _additional_ fuel required to finish the race, and the fuel amount that is scheduled to be added on the next pit stop. To compute the estimated fuel consumption, the last 4 laps under green and without pit stops are taken into account, and a 5% safety margin is added. These parameters can be customized.
+The fuel calculator shows the estimated remaining laps, remaining amount of fuel, estimated fuel used per lap, estimated _additional_ fuel required to finish the race, and the fuel amount that is scheduled to be added on the next pit stop. To compute the estimated fuel consumption, the last 4 laps under green and without pit stops are taken into account, and a configurable safety margin is added. These parameters can be customized.
 
 ![ddu](https://github.com/lespalt/iRon/blob/main/ddu.png?raw=true)
 
@@ -83,6 +83,14 @@ Overlays can be switched on and off at runtime using the hotkeys displayed durin
 Certain aspects of the overlays, such as colors, font types, sizes etc. can be customized. To do that, open the file **config.json** that iRon created and experiment by editing the (hopefully mostly self-explanatory) parameters. You can do that while the app is running -- the changes will take effect immediately whenever the file is saved.
 
 _Note that currently, the config file will be created only after the overlays have been "touched" for the first time, usually by dragging or resizing them._
+
+##### Fuel calculator
+Fuel in laps = ( Remaining_Fuel - Reserve Fuel ) / (Average_Use x Fuel_Estimate_Factor) 
+
+Vars: 
+fuel_estimate_avg_green_laps: Amount of laps to average in the lap calculation
+fuel_estimate_factor: Amount to multiply the fuel use for (coarse safety margin)
+fuel_reserve_margin: Amount of fuel to reserve in the calculations
 
 ---
 
